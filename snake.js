@@ -24,15 +24,28 @@ let score = 0;
 let gameOver = false;
 
 // Set up event listeners
-window.addEventListener("deviceorientation", handleOrientation);
+if (window.DeviceOrientationEvent)
+  window.addEventListener("deviceorientation", handleOrientation);
+if (window.KeyboardEvent) window.addEventListener("keypress", handleKeydown);
+let velocity = 10;
 
-let velocity = 5;
 function moveSnake() {
   snake.segments.unshift({
-    x: snake.segments[0].x + snake.dx,
-    y: snake.segments[0].x + snake.dy,
+    x: snake.segments[0].x + snake.dx * velocity,
+    y: snake.segments[0].y + snake.dy * velocity,
   });
   snake.segments.pop();
+}
+
+function handleKeydown(event) {
+  let newDx, newDy;
+  if (event.code === "KeyA") (newDx = -1), (newDy = 0);
+  else if (event.code === "KeyD") (newDx = 1), (newDy = 0);
+  else if (event.code === "KeyW") (newDy = -1), (newDx = 0);
+  else if (event.code === "KeyS") (newDy = 1), (newDx = 0);
+  if (newDx * snake.dx + newDy * snake.dy !== 0) return;
+  snake.dx = newDx;
+  snake.dy = newDy;
 }
 
 // Function to handle orientation change
@@ -47,16 +60,14 @@ function handleOrientation(event) {
     newDy = event.beta / Math.abs(event.beta);
   }
   // Ignore input if reversing orientation
-  if (newDx * snake.dx + newDy * snake.dy !== 0) {
-    return;
-  }
+  if (newDx * snake.dx + newDy * snake.dy !== 0) return;
+
   snake.dx = newDx;
   snake.dy = newDy;
 }
 
 function updateSnake() {
   moveSnake();
-
   // Check for collision with self
   checkCollision();
 
@@ -138,7 +149,7 @@ function checkGameOver() {
     clearInterval(intervalId);
     ctx.font = "50px Arial";
     ctx.fillStyle = "red";
-    ctx.fillText("Game Over!", 100, 250);
+    ctx.fillText("Game Over!", 15, 150);
   }
 }
 
@@ -158,4 +169,4 @@ function updateCanvas() {
 }
 
 // Set up the game loop
-let intervalId = setInterval(updateCanvas, 1000 / 60);
+let intervalId = setInterval(updateCanvas, 1000 / 10);
