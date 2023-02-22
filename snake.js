@@ -56,14 +56,14 @@ function handleOrientation(event) {
     newDy = event.beta;
   if (newDy > newDx) {
     //top
-    if (newDy > -newDx) (newDy = -1), (newDx = 0);
+    if (newDy > -newDx) (newDy = 1), (newDx = 0);
     //left
     else (newDx = -1), (newDy = 0);
   } else {
     //right
     if (newDy > -newDx) (newDx = 1), (newDy = 0);
     //down
-    else (newDy = 1), (newDx = 0);
+    else (newDy = -1), (newDx = 0);
   }
   // Ignore input if reversing orientation
   if (newDx * snake.dx + newDy * snake.dy !== 0) return;
