@@ -24,8 +24,8 @@ let score = 0;
 let gameOver = false;
 
 // Set up event listeners
-// if (window.DeviceOrientationEvent)
-window.addEventListener("deviceorientation", handleOrientation);
+if (window.DeviceOrientationEvent)
+  window.addEventListener("deviceorientation", handleOrientation);
 if (window.KeyboardEvent) window.addEventListener("keypress", handleKeydown);
 let velocity = 10;
 
@@ -46,6 +46,7 @@ function handleKeydown(event) {
   if (newDx * snake.dx + newDy * snake.dy !== 0) return;
   snake.dx = newDx;
   snake.dy = newDy;
+  handleOrientation(newDx, newDy);
 }
 
 // Function to handle orientation change
