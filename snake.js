@@ -28,45 +28,31 @@ var gameOver = false;
 // Set up event listeners
 window.addEventListener("deviceorientation", handleOrientation);
 
-// Function to handle orientation change
-function handleOrientation(event) {
-  // Set snake velocity based on gravity
-  snake.dx = event.gamma;
-  snake.dy = event.beta;
-}
+var velocity = 5;
+var direction = "right";
 
-// Function to draw the snake
-function drawSnake() {
-  ctx.fillStyle = snake.color;
-  for (var i = 0; i < snake.segments.length; i++) {
-    ctx.fillRect(
-      snake.segments[i].x,
-      snake.segments[i].y,
-      snake.size,
-      snake.size
-    );
+function handleOrientation(event) {
+  if (event.gamma > 0) {
+    direction = "right";
+  } else {
+    direction = "left";
   }
 }
 
-// Function to draw the food
-function drawFood() {
-  ctx.fillStyle = food.color;
-  ctx.fillRect(food.x, food.y, food.size, food.size);
-}
-
-// Function to update the snake's position
 function updateSnake() {
   // Move snake
-  var newSegment = {
-    x: snake.segments[0].x + snake.dx,
-    y: snake.segments[0].y + snake.dy,
-  };
-  snake.segments.unshift(newSegment);
-
-  // Remove the last segment if the snake hasn't eaten food
-  if (score === 0) {
-    snake.segments.pop();
+  if (direction === "right") {
+    snake.segments.unshift({
+      x: snake.segments[0].x + velocity,
+      y: snake.segments[0].y,
+    });
+  } else if (direction === "left") {
+    snake.segments.unshift({
+      x: snake.segments[0].x - velocity,
+      y: snake.segments[0].y,
+    });
   }
+  snake.segments.pop();
 
   // Check for collision with walls
   if (
@@ -77,6 +63,9 @@ function updateSnake() {
   ) {
     gameOver = true;
   }
+
+  // Check for collision with self
+  checkCollision();
 
   // Check for collision with food
   if (
@@ -98,6 +87,37 @@ function updateSnake() {
     // Move food to a random location
     food.x = Math.floor(Math.random() * (canvas.width / food.size)) * food.size;
     food.y = Math.floor(Math.random() * (canvas.height / food.size)) * food.size;
+  }
+}
+
+
+// Function to draw the snake
+function drawSnake() {
+  ctx.fillStyle = snake.color;
+  for (var i = 0; i < snake.segments.length; i++) {
+    ctx.fillRect(
+      snake.segments[i].x,
+      snake.segments[i].y,
+      snake.size,
+      snake.size
+    );
+  }
+}
+
+// Function to draw the food
+function drawFood() {
+  ctx.fillStyle = food.color;
+  ctx.fillRect(food.x, food.y, food.size, food.size);
+}
+
+function checkCollision() {
+  for (var i = 1; i < snake.segments.length; i++) {
+    if (
+      snake.segments[i].x === snake.segments[0].x &&
+      snake.segments[i].y === snake.segments[0].y
+    ) {
+      gameOver = true;
+    }
   }
 }
 
