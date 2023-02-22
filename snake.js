@@ -51,7 +51,8 @@ function handleKeydown(event) {
 // Function to handle orientation change
 function handleOrientation(event) {
   // Set snake velocity
-  let newDx, newDy;
+  let newDx = event.gamma,
+    newDy = event.beta;
   if (Math.abs(newDx) > Math.abs(newDy)) {
     newDx = event.gamma / Math.abs(event.gamma);
     newDy = 0;
