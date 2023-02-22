@@ -25,17 +25,14 @@ var food = {
 var score = 0;
 var gameOver = false;
 
-// Define gravity properties
-var gravity = 0.1;
-
 // Set up event listeners
 window.addEventListener("deviceorientation", handleOrientation);
 
 // Function to handle orientation change
 function handleOrientation(event) {
   // Set snake velocity based on gravity
-  snake.dx = event.gamma * gravity;
-  snake.dy = event.beta * gravity;
+  snake.dx = event.gamma;
+  snake.dy = event.beta;
 }
 
 // Function to draw the snake
@@ -65,7 +62,11 @@ function updateSnake() {
     y: snake.segments[0].y + snake.dy,
   };
   snake.segments.unshift(newSegment);
-  snake.segments.pop();
+
+  // Remove the last segment if the snake hasn't eaten food
+  if (score === 0) {
+    snake.segments.pop();
+  }
 
   // Check for collision with walls
   if (
