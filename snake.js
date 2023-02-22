@@ -46,7 +46,6 @@ function handleKeydown(event) {
   if (newDx * snake.dx + newDy * snake.dy !== 0) return;
   snake.dx = newDx;
   snake.dy = newDy;
-  handleOrientation(newDx, newDy);
 }
 
 // Function to handle orientation change
