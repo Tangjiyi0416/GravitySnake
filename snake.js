@@ -54,12 +54,16 @@ function handleOrientation(event) {
   // Set snake velocity
   let newDx = event.gamma,
     newDy = event.beta;
-  if (Math.abs(newDx) > Math.abs(newDy)) {
-    newDx = event.gamma / Math.abs(event.gamma);
-    newDy = 0;
+  if (newDy > newDx) {
+    //top
+    if (newDy > -newDx) (newDy = -1), (newDx = 0);
+    //left
+    else (newDx = -1), (newDy = 0);
   } else {
-    newDx = 0;
-    newDy = event.beta / Math.abs(event.beta);
+    //right
+    if (newDy > -newDx) (newDx = 1), (newDy = 0);
+    //down
+    else (newDy = 1), (newDx = 0);
   }
   // Ignore input if reversing orientation
   if (newDx * snake.dx + newDy * snake.dy !== 0) return;
