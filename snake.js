@@ -29,7 +29,6 @@ var gameOver = false;
 window.addEventListener("deviceorientation", handleOrientation);
 
 var velocity = 5;
-var direction = "right";
 
 // Function to handle orientation change
 function handleOrientation(event) {
@@ -51,20 +50,13 @@ function handleOrientation(event) {
   snake.dy = newDy;
 }
 
-
 function updateSnake() {
   // Move snake
-  if (direction === "right") {
-    snake.segments.unshift({
-      x: snake.segments[0].x + velocity,
-      y: snake.segments[0].y,
-    });
-  } else if (direction === "left") {
-    snake.segments.unshift({
-      x: snake.segments[0].x - velocity,
-      y: snake.segments[0].y,
-    });
-  }
+  snake.segments.unshift({
+    x: snake.segments[0].x + snake.dx * velocity,
+    y: snake.segments[0].y + snake.dy * velocity,
+  });
+
   snake.segments.pop();
 
   // Check for collision with walls
@@ -99,10 +91,10 @@ function updateSnake() {
 
     // Move food to a random location
     food.x = Math.floor(Math.random() * (canvas.width / food.size)) * food.size;
-    food.y = Math.floor(Math.random() * (canvas.height / food.size)) * food.size;
+    food.y =
+      Math.floor(Math.random() * (canvas.height / food.size)) * food.size;
   }
 }
-
 
 // Function to draw the snake
 function drawSnake() {
