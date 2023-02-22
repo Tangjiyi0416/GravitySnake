@@ -24,8 +24,8 @@ let score = 0;
 let gameOver = false;
 
 // Set up event listeners
-if (window.DeviceOrientationEvent)
-  window.addEventListener("deviceorientation", handleOrientation);
+// if (window.DeviceOrientationEvent)
+window.addEventListener("deviceorientation", handleOrientation);
 if (window.KeyboardEvent) window.addEventListener("keypress", handleKeydown);
 let velocity = 10;
 
