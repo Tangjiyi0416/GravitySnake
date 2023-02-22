@@ -15,8 +15,8 @@ var snake = {
 
 // Define food properties
 var food = {
-  x: 0,
-  y: 0,
+  x: canvas.width/2-5,
+  y: canvas height /2- 10,
   size: 10,
   color: "red",
 };
