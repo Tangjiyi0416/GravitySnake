@@ -27,48 +27,53 @@ let gameOver = false;
 if (window.DeviceOrientationEvent)
   window.addEventListener("deviceorientation", handleOrientation);
 if (window.KeyboardEvent) window.addEventListener("keypress", handleKeydown);
-let velocity = 10;
 
-function moveSnake() {
-  snake.segments.unshift({
-    x: snake.segments[0].x + snake.dx * velocity,
-    y: snake.segments[0].y + snake.dy * velocity,
-  });
-  snake.segments.pop();
-}
-
+let newDx = 0,
+  newDy = -1;
 function handleKeydown(event) {
-  let newDx, newDy;
-  if (event.code === "KeyA") (newDx = -1), (newDy = 0);
-  else if (event.code === "KeyD") (newDx = 1), (newDy = 0);
-  else if (event.code === "KeyW") (newDy = -1), (newDx = 0);
-  else if (event.code === "KeyS") (newDy = 1), (newDx = 0);
-  if (newDx * snake.dx + newDy * snake.dy !== 0) return;
-  snake.dx = newDx;
-  snake.dy = newDy;
+  let inDx, inDy;
+  if (event.code === "KeyA") (inDx = -1), (inDy = 0);
+  else if (event.code === "KeyD") (inDx = 1), (inDy = 0);
+  else if (event.code === "KeyW") (inDy = -1), (inDx = 0);
+  else if (event.code === "KeyS") (inDy = 1), (inDx = 0);
+  if (inDx * snake.dx + inDy * snake.dy !== 0) return;
+  newDx = inDx;
+  newDy = inDy;
 }
 
 // Function to handle orientation change
 function handleOrientation(event) {
   // Set snake velocity
-  let newDx = event.gamma,
-    newDy = event.beta;
-  if (newDy > newDx) {
+  let inDx = event.gamma,
+    inDy = event.beta;
+  if (inDy > inDx) {
     //down
-    if (newDy > -newDx) (newDy = 1), (newDx = 0);
+    if (inDy > -inDx) (inDy = 1), (inDx = 0);
     //left
-    else (newDx = -1), (newDy = 0);
+    else (inDx = -1), (inDy = 0);
   } else {
     //right
-    if (newDy > -newDx) (newDx = 1), (newDy = 0);
+    if (inDy > -inDx) (inDx = 1), (inDy = 0);
     //top
-    else (newDy = -1), (newDx = 0);
+    else (inDy = -1), (inDx = 0);
   }
   // Ignore input if reversing orientation
-  if (newDx * snake.dx + newDy * snake.dy !== 0) return;
+  if (inDx * snake.dx + inDy * snake.dy !== 0) return;
 
+  newDx = inDx;
+  newDy = inDy;
+}
+
+let velocity = 10;
+
+function moveSnake() {
   snake.dx = newDx;
   snake.dy = newDy;
+  snake.segments.unshift({
+    x: snake.segments[0].x + snake.dx * velocity,
+    y: snake.segments[0].y + snake.dy * velocity,
+  });
+  snake.segments.pop();
 }
 
 function updateSnake() {
