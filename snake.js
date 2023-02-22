@@ -1,75 +1,61 @@
 // Set up canvas and context
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
 
 // Define snake properties
-var snake = {
-  x: canvas.width / 2 - 5,
-  y: canvas.height / 2 - 5,
+let snake = {
   size: 10,
   color: "green",
   dx: 0,
-  dy: 0,
+  dy: -1,
   segments: [{ x: canvas.width / 2 - 5, y: canvas.height / 2 - 5 }],
 };
 
 // Define food properties
-var food = {
+let food = {
   x: canvas.width / 2 - 5,
-  y: canvas.height / 2 - 10,
+  y: canvas.height / 2 - 20,
   size: 10,
   color: "red",
 };
 
 // Define game properties
-var score = 0;
-var gameOver = false;
+let score = 0;
+let gameOver = false;
 
 // Set up event listeners
 window.addEventListener("deviceorientation", handleOrientation);
 
-var velocity = 5;
+let velocity = 5;
+function moveSnake() {
+  snake.segments.unshift({
+    x: snake.segments[0].x + snake.dx,
+    y: snake.segments[0].x + snake.dy,
+  });
+  snake.segments.pop();
+}
 
 // Function to handle orientation change
 function handleOrientation(event) {
-  // Set snake velocity based on gravity
-  var newDx = event.gamma;
-  var newDy = event.beta;
-
+  // Set snake velocity
+  let newDx, newDy;
+  if (Math.abs(newDx) > Math.abs(newDy)) {
+    newDx = event.gamma / Math.abs(event.gamma);
+    newDy = 0;
+  } else {
+    newDx = 0;
+    newDy = event.beta / Math.abs(event.beta);
+  }
   // Ignore input if reversing orientation
-  if (
-    (newDx < 0 && snake.dx > 0) ||
-    (newDx > 0 && snake.dx < 0) ||
-    (newDy < 0 && snake.dy > 0) ||
-    (newDy > 0 && snake.dy < 0)
-  ) {
+  if (newDx * snake.dx + newDy * snake.dy !== 0) {
     return;
   }
-  if (Math.abs(newDx) > Math.abs(newDy)) {
-    snake.dx = newDx / Math.abs(newDx);
-  } else {
-    snake.dy = newDy / Math.abs(newDy);
-  }
+  snake.dx = newDx;
+  snake.dy = newDy;
 }
 
 function updateSnake() {
-  // Move snake
-  snake.segments.unshift({
-    x: snake.segments[0].x + snake.dx * velocity,
-    y: snake.segments[0].y + snake.dy * velocity,
-  });
-
-  snake.segments.pop();
-
-  // Check for collision with walls
-  if (
-    snake.segments[0].x < 0 ||
-    snake.segments[0].x + snake.size > canvas.width ||
-    snake.segments[0].y < 0 ||
-    snake.segments[0].y + snake.size > canvas.height
-  ) {
-    gameOver = true;
-  }
+  moveSnake();
 
   // Check for collision with self
   checkCollision();
@@ -85,7 +71,7 @@ function updateSnake() {
     score++;
 
     // Add new segment to snake
-    var newSegment = {
+    let newSegment = {
       x: snake.segments[0].x,
       y: snake.segments[0].y,
     };
@@ -101,7 +87,7 @@ function updateSnake() {
 // Function to draw the snake
 function drawSnake() {
   ctx.fillStyle = snake.color;
-  for (var i = 0; i < snake.segments.length; i++) {
+  for (let i = 0; i < snake.segments.length; i++) {
     ctx.fillRect(
       snake.segments[i].x,
       snake.segments[i].y,
@@ -118,12 +104,23 @@ function drawFood() {
 }
 
 function checkCollision() {
-  for (var i = 1; i < snake.segments.length; i++) {
+  // Check for collision with walls
+  if (
+    snake.segments[0].x < 0 ||
+    snake.segments[0].x + snake.size > canvas.width ||
+    snake.segments[0].y < 0 ||
+    snake.segments[0].y + snake.size > canvas.height
+  ) {
+    gameOver = true;
+    return;
+  }
+  for (let i = 1; i < snake.segments.length; i++) {
     if (
       snake.segments[i].x === snake.segments[0].x &&
       snake.segments[i].y === snake.segments[0].y
     ) {
       gameOver = true;
+      return;
     }
   }
 }
@@ -153,12 +150,12 @@ function clearCanvas() {
 // Function to update the canvas
 function updateCanvas() {
   clearCanvas();
+  updateSnake();
   drawSnake();
   drawFood();
-  updateSnake();
   drawScore();
   checkGameOver();
 }
 
 // Set up the game loop
-var intervalId = setInterval(updateCanvas, 1000 / 60);
+let intervalId = setInterval(updateCanvas, 1000 / 60);
