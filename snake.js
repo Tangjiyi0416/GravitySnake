@@ -45,9 +45,11 @@ function handleOrientation(event) {
   ) {
     return;
   }
-
-  snake.dx = newDx;
-  snake.dy = newDy;
+  if (Math.abs(newDx) > Math.abs(newDy)) {
+    snake.dx = newDx / Math.abs(newDx);
+  } else {
+    snake.dy = newDy / Math.abs(newDy);
+  }
 }
 
 function updateSnake() {
