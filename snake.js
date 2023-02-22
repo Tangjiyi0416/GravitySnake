@@ -4,12 +4,13 @@ var ctx = canvas.getContext("2d");
 
 // Define snake properties
 var snake = {
-  x: 10,
-  y: 10,
+  x: canvas.width / 2 - 5,
+  y: canvas.height / 2 - 5,
   size: 10,
   color: "green",
   dx: 0,
   dy: 0,
+  segments: [{ x: canvas.width / 2 - 5, y: canvas.height / 2 - 5 }],
 };
 
 // Define food properties
@@ -40,7 +41,14 @@ function handleOrientation(event) {
 // Function to draw the snake
 function drawSnake() {
   ctx.fillStyle = snake.color;
-  ctx.fillRect(snake.x, snake.y, snake.size, snake.size);
+  for (var i = 0; i < snake.segments.length; i++) {
+    ctx.fillRect(
+      snake.segments[i].x,
+      snake.segments[i].y,
+      snake.size,
+      snake.size
+    );
+  }
 }
 
 // Function to draw the food
@@ -52,28 +60,39 @@ function drawFood() {
 // Function to update the snake's position
 function updateSnake() {
   // Move snake
-  snake.x += snake.dx;
-  snake.y += snake.dy;
+  var newSegment = {
+    x: snake.segments[0].x + snake.dx,
+    y: snake.segments[0].y + snake.dy,
+  };
+  snake.segments.unshift(newSegment);
+  snake.segments.pop();
 
   // Check for collision with walls
   if (
-    snake.x < 0 ||
-    snake.x + snake.size > canvas.width ||
-    snake.y < 0 ||
-    snake.y + snake.size > canvas.height
+    snake.segments[0].x < 0 ||
+    snake.segments[0].x + snake.size > canvas.width ||
+    snake.segments[0].y < 0 ||
+    snake.segments[0].y + snake.size > canvas.height
   ) {
     gameOver = true;
   }
 
   // Check for collision with food
   if (
-    snake.x < food.x + food.size &&
-    snake.x + snake.size > food.x &&
-    snake.y < food.y + food.size &&
-    snake.y + snake.size > food.y
+    snake.segments[0].x < food.x + food.size &&
+    snake.segments[0].x + snake.size > food.x &&
+    snake.segments[0].y < food.y + food.size &&
+    snake.segments[0].y + snake.size > food.y
   ) {
     // Increase score
     score++;
+
+    // Add new segment to snake
+    var newSegment = {
+      x: snake.segments[0].x,
+      y: snake.segments[0].y,
+    };
+    snake.segments.unshift(newSegment);
 
     // Move food to a random location
     food.x = Math.floor(Math.random() * (canvas.width / food.size)) * food.size;
