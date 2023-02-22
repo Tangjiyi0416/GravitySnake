@@ -31,13 +31,26 @@ window.addEventListener("deviceorientation", handleOrientation);
 var velocity = 5;
 var direction = "right";
 
+// Function to handle orientation change
 function handleOrientation(event) {
-  if (event.gamma > 0) {
-    direction = "right";
-  } else {
-    direction = "left";
+  // Set snake velocity based on gravity
+  var newDx = event.gamma;
+  var newDy = event.beta;
+
+  // Ignore input if reversing orientation
+  if (
+    (newDx < 0 && snake.dx > 0) ||
+    (newDx > 0 && snake.dx < 0) ||
+    (newDy < 0 && snake.dy > 0) ||
+    (newDy > 0 && snake.dy < 0)
+  ) {
+    return;
   }
+
+  snake.dx = newDx;
+  snake.dy = newDy;
 }
+
 
 function updateSnake() {
   // Move snake
