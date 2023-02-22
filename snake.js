@@ -55,14 +55,14 @@ function handleOrientation(event) {
   let newDx = event.gamma,
     newDy = event.beta;
   if (newDy > newDx) {
-    //top
+    //down
     if (newDy > -newDx) (newDy = 1), (newDx = 0);
     //left
     else (newDx = -1), (newDy = 0);
   } else {
     //right
     if (newDy > -newDx) (newDx = 1), (newDy = 0);
-    //down
+    //top
     else (newDy = -1), (newDx = 0);
   }
   // Ignore input if reversing orientation
